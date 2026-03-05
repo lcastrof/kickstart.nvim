@@ -106,9 +106,8 @@ vim.keymap.set({ 'n', 'v' }, '<C-/>', 'gcc<Esc>', { remap = true, desc = 'Commen
 vim.keymap.set('v', '>', '>gv')
 vim.keymap.set('v', '<', '<gv')
 
--- Add blank line without exiting normal mode
-vim.keymap.set('n', '<leader>o', 'm`o<Esc>``', { desc = 'Add new line below' })
-vim.keymap.set('n', '<leader>O', 'm`O<Esc>``', { desc = 'Add new line above' })
+-- Close all other splitted windows
+vim.keymap.set('n', '<leader>o', ':only<CR>', { desc = 'Close all other windows' })
 
 -- Center screen when using <C-d> and <C-u>
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
@@ -120,6 +119,9 @@ vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = '[W]rite/Save file' })
 -- Delete lines above and below
 vim.keymap.set('n', '<leader>dj', 'm`jdd``', { desc = 'Delete line below' })
 vim.keymap.set('n', '<leader>dk', 'm`kdd``', { desc = 'Delete line above' })
+
+-- Toggle explorer
+vim.keymap.set('n', '<leader>e', ':Neotree toggle<CR>', { desc = 'Toggle Explorer' })
 
 -- END OF MY CONFIGS
 
@@ -842,7 +844,7 @@ require('lazy').setup({
     branch = 'main',
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter-intro`
     config = function()
-      local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+      local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'go' }
       require('nvim-treesitter').install(parsers)
       vim.api.nvim_create_autocmd('FileType', {
         callback = function(args)
@@ -865,8 +867,19 @@ require('lazy').setup({
           vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
         end,
       })
+      require('treesitter-context').setup {
+        enable = true, -- Ativa o plugin por padrão
+        max_lines = 3, -- Limita a no máximo 3 linhas fixas (ideal para telas menores)
+        min_window_height = 0, -- Só ativa se a janela tiver altura suficiente
+        line_numbers = true, -- Mostra números de linha no contexto (ajuda a se situar)
+        multiline_threshold = 20, -- Máximo de linhas a mostrar para um único contexto
+        trim_scope = 'outer', -- Descarta o contexto externo se exceder max_lines
+        mode = 'cursor', -- Calcula o contexto baseado na posição do cursor
+        separator = '─', -- Adiciona uma linha sutil separando o contexto do código
+      }
     end,
   },
+  'nvim-treesitter/nvim-treesitter-context',
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
