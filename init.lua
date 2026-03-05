@@ -123,6 +123,20 @@ vim.keymap.set('n', '<leader>dk', 'm`kdd``', { desc = 'Delete line above' })
 -- Toggle explorer
 vim.keymap.set('n', '<leader>e', ':Neotree toggle<CR>', { desc = 'Toggle Explorer' })
 
+-- Move selected blocks
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
+
+-- Keep cursor inplace when joining lines
+vim.keymap.set('n', 'J', 'mzJ`z')
+
+-- Center when using search through 'n'
+vim.keymap.set('n', 'n', 'nzzzv')
+vim.keymap.set('n', 'N', 'Nzzzv')
+
+-- Replace all words under the cursor in a file
+vim.keymap.set('n', '<C-S-l>', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = 'Replace all words under the cursor in a file' })
+
 -- END OF MY CONFIGS
 
 -- Diagnostic Config & Keymaps
